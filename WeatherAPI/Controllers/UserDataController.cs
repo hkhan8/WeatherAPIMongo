@@ -23,7 +23,7 @@ namespace WeatherAPI.Controllers
         [HttpPost("CreateNewUser")]
         public IActionResult CreateUser(string APIKey, UserData newUser)
         {
-            if (!IsAuthenticated(APIKey, "Admin"))
+            if (!IsAuthenticated(APIKey, newUser.Role))
             {
                 return Unauthorized();
             }
@@ -33,16 +33,22 @@ namespace WeatherAPI.Controllers
             return Ok(userAPIKey);
         }
 
-        private bool IsAuthenticated(string APIKey, string requiredAccess)
+        private bool IsAuthenticated(string APIKey, string createdAccessLevel)
         {
-            if (_users.AuthenticateUser(APIKey, requiredAccess) == null)
-            {
-                return false;
-            }
             _users.UpdateLoginTime(APIKey, DateTime.Now);
-            return true;
+            return _users.AuthenticateUser(APIKey, createdAccessLevel);            
         }
 
+        [HttpDelete("DeleteUserByID")]
+        public IActionResult RemoveSingleUser(string APIKey, string objid)
+        {
+            if(!IsAuthenticated(APIKey, "Admin"))
+            {
+                return Unauthorized();
+            }
+            var deleteUser = _users.RemoveSingleUser(APIKey, objid);
+            return Ok(deleteUser);
+        }
 
     }
 }

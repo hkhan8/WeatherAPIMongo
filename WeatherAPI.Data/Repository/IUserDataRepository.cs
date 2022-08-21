@@ -11,11 +11,11 @@ namespace WeatherAPI.Data.Repository
     {
         string CreateUser(UserData newUser);
 
-        UserData AuthenticateUser(string APIKey, string requiredAccess);
+        bool AuthenticateUser(string APIKey, string requiredAccess);
 
         int RemoveIdleUsers(DateTime lastLogin);
 
-        void RemoveSingleUser(string APIKey);
+        string RemoveSingleUser(string APIKey, string objid);
 
         void UpdateLoginTime(string APIKey, DateTime loginTime);
 

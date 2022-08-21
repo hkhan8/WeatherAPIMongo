@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WeatherAPI.Data.Repository;
 using WeatherAPI.Data.Services;
+using MongoDB.Bson;
 
 namespace WeatherAPI.Data.Repository
 {
@@ -21,7 +22,7 @@ namespace WeatherAPI.Data.Repository
             _users = _db.GetCollection<UserData>("Users");
         }
 
-        public UserData AuthenticateUser(string APIKey, string requiredAccess)
+        public bool AuthenticateUser(string APIKey, string createAccessLevel)
         {
             // add a filter based on the APIKey
             var filter = Builders<UserData>.Filter.Eq(c => c.ApiKey, APIKey);
@@ -29,14 +30,26 @@ namespace WeatherAPI.Data.Repository
             // find and retrieve the user
             var user = _users.Find(filter).FirstOrDefault();
 
-            // if the user is null or does not match the required access
-            if (user == null || !user.Role.Equals(requiredAccess))
+            // if the user is null or does not match the required access roles, return false
+            if (user == null || (createAccessLevel != "Admin" && createAccessLevel != "Teacher" & createAccessLevel != "Student"))
             {
                 // return null
-                return null;
+                return false;
             }
-            // return the user
-            return user;
+            //user is set to admin all perms are granted
+            else if(user.Role == "Admin")
+            {
+                return true;
+            }
+            //user is teacher, make sure only created user can be a student
+            else if(user.Role == "Teacher" && createAccessLevel == "Student")
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public string CreateUser(UserData newUser)
@@ -61,9 +74,12 @@ namespace WeatherAPI.Data.Repository
             throw new NotImplementedException();
         }
 
-        public void RemoveSingleUser(string APIKey)
+        public string RemoveSingleUser(string APIKey, string objid)
         {
-            throw new NotImplementedException();
+            var filter = Builders<UserData>.Filter.Eq(c => c._id, ObjectId.Parse(objid));
+            var objId = _users.DeleteOne(filter);
+
+            return objid;
         }
 
         public void UpdateLoginTime(string APIKey, DateTime loginTime)

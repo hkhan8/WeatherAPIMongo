@@ -52,6 +52,7 @@ namespace WeatherAPI.Data.Repository
         //}
 
         // insert new weather readings
+
         public void InsertWeatherReading(Weather weather)
         {
             _collection.InsertOne(weather);
@@ -82,15 +83,6 @@ namespace WeatherAPI.Data.Repository
             max.Precipitation = test.Precipitation;
             return max;
         }
-
-        public void InsertFarenheightFields()
-        {
-
-
-
-
-        }
-
 
         public List<ReadingsByDate> ReadingsByDate(DateTime min, DateTime max)
         {
