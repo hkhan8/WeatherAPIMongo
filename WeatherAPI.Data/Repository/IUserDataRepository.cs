@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MongoDB.Bson;
 
 namespace WeatherAPI.Data.Repository
 {
@@ -17,7 +18,10 @@ namespace WeatherAPI.Data.Repository
 
         string RemoveSingleUser(string APIKey, string objid);
 
+        string RemoveMultipleUsers(string APIKey, string objid);
+
         void UpdateLoginTime(string APIKey, DateTime loginTime);
 
+        bool UpdateRoles(string userRoles);
     }
 }

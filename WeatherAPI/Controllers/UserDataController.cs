@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WeatherAPI.Data.Repository;
+using MongoDB.Bson;
 
 namespace WeatherAPI.Controllers
 {
@@ -48,6 +49,29 @@ namespace WeatherAPI.Controllers
             }
             var deleteUser = _users.RemoveSingleUser(APIKey, objid);
             return Ok(deleteUser);
+        }
+
+        [HttpDelete("DeleteMultipleUsers")]
+        public IActionResult DeleteMultipleUsers(string APIKey, string objid)
+        {
+            if (!IsAuthenticated(APIKey, "Admin"))
+            {
+                return Unauthorized();
+            }
+            var deleteUsers = _users.RemoveMultipleUsers(APIKey, objid);
+            return Ok(deleteUsers);
+        }
+
+        [HttpPatch("UpdateRoles")]
+        public IActionResult UpdateRoles(string APIKey, string userRoles)
+        {
+            if (!IsAuthenticated(APIKey, "Admin"))
+            {
+                return Unauthorized();
+            }
+            _users.UpdateRoles(userRoles);
+
+            return Ok();
         }
 
     }

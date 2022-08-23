@@ -25,7 +25,9 @@ namespace WeatherAPI.Data.Models
         public decimal Latitude { get; set; }
         [BsonRepresentation(BsonType.Decimal128)]
         public decimal Longitude { get; set; }
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public string Location { get; set; }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         [BsonElement("Temperature (°C)")]
         public decimal Temperature { get; set; }
         [BsonElement("Atmospheric Pressure (kPa)")]
